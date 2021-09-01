@@ -34,7 +34,7 @@ public class PdfConverterBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "1925128920:AAGrdPatEISzQhAce2yiDm6papH__ZQ8FZc";
+        return "token";
     }
 
     @SneakyThrows
