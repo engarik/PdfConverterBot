@@ -1,6 +1,6 @@
 package com.github.engarik.pdfconverterbot.pdf.impl;
 
-import com.github.engarik.pdfconverterbot.files.ImageFileFilter;
+import com.github.engarik.pdfconverterbot.utils.ImageFileFilter;
 import com.github.engarik.pdfconverterbot.pdf.PdfHandler;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -28,12 +28,12 @@ public class ITextPdfHandler implements PdfHandler {
     }
 
     @Override
-    public void handle(String rootDirectory) throws Exception {
-        handle(rootDirectory, "output.pdf");
+    public void convert(String rootDirectory) throws Exception {
+        convert(rootDirectory, "output.pdf");
     }
 
     @Override
-    public void handle(String rootDirectory, String outputFilename) throws Exception {
+    public void convert(String rootDirectory, String outputFilename) throws Exception {
         File rootDirectoryFile = new File(rootDirectory);
         if (!(rootDirectoryFile.exists() || rootDirectoryFile.isDirectory())) {
             throw new IllegalArgumentException("rootDirectory must exist and be a directory.");
