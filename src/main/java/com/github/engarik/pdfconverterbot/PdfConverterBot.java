@@ -98,8 +98,8 @@ public class PdfConverterBot extends TelegramLongPollingBot {
                         .build());
             }
         } else if (message.hasPhoto()) {
-            stateController.downloadPhoto(message.getChatId().toString(), message.getPhoto());
             System.out.println("Got photo");
+            stateController.downloadPhoto(message.getChatId().toString(), message.getPhoto());
         }
     }
 }

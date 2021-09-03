@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,7 +86,20 @@ public class StateController {
     }
 
     public void downloadPhoto(String chatId, List<PhotoSize> photos) {
-
+        PhotoSize photoSize = photos.get(photos.size() - 1);
+        new Thread(() -> {
+            try {
+                File outputFile = new File("userFiles/" + chatId + "/" + System.nanoTime() + "_" + photoSize.getFileId() + ".jpg");
+                downloadHandler.downloadPhoto(outputFile, photoSize);
+                imageHandler.handle(outputFile);
+                if (!numberOfFilesDownloaded.containsKey(chatId)) {
+                    numberOfFilesDownloaded.put(chatId, 0);
+                }
+                numberOfFilesDownloaded.put(chatId, numberOfFilesDownloaded.get(chatId) + 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void clearDirectory(File directory) {
