@@ -39,6 +39,11 @@ public class StateController {
         File directory = new File("userFiles/" + chatId + "/out");
 
         if (!(directory.exists() && directory.isDirectory())) {
+            PdfConverterBot.getInstance().execute(SendMessage.builder()
+                            .chatId(chatId)
+                            .text("Can't make PDF.\nFiles may be corrupted, please check them and send again.")
+                    .build());
+            clearDirectory(new File("userFiles/" + chatId));
             throw new IOException("Directory not found: " + directory.getName());
         }
 
@@ -89,6 +94,7 @@ public class StateController {
                 }
                 numberOfFilesDownloaded.put(chatId, numberOfFilesDownloaded.get(chatId) + 1);
             } catch (Exception e) {
+                System.out.println("HERE");
                 e.printStackTrace();
             }
         }).start();
