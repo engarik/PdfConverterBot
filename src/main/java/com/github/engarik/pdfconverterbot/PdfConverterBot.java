@@ -35,6 +35,7 @@ public class PdfConverterBot extends TelegramLongPollingBot {
         Properties properties = new Properties();
         try {
             properties.load(new FileReader("bot.properties"));
+
         } catch (IOException e) {
             System.err.println("Error while trying to read bot.properties file.");
             System.exit(-1);
@@ -42,7 +43,7 @@ public class PdfConverterBot extends TelegramLongPollingBot {
         this.botName = properties.getProperty("bot.name");
         this.botToken = properties.getProperty("bot.token");
         if (botName == null || botToken == null) {
-            System.err.println("Error while trying to read bot.properties file.");
+            System.err.println("bot.name or bot.token is not set");
             System.exit(-1);
         }
     }
@@ -65,7 +66,7 @@ public class PdfConverterBot extends TelegramLongPollingBot {
         }
     }
 
-    private void handleMessage(Message message) throws TelegramApiException {
+    private void handleMessage(Message message) throws TelegramApiException, IOException {
         if (message.hasText() && message.hasEntities()) {
             Optional<MessageEntity> commandEntity =
                     message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
@@ -81,15 +82,11 @@ public class PdfConverterBot extends TelegramLongPollingBot {
                             .text("1. Send your JPG, PNG or GIF files via photos or documents.\n" +
                                     "2. Send /e command to get the PDF file.")
                             .build());
-                    case "/e" -> {
-                        stateController.convertToPdf(message.getChatId().toString());
-                        System.out.println("Close PDF file.");
-                    }
+                    case "/e" -> stateController.convertToPdf(message.getChatId().toString());
                 }
             }
         } else if (message.hasDocument()) {
             if (AllowedMimeTypes.isAllowed(message.getDocument().getMimeType())) {
-                System.out.println("Got document");
                 stateController.downloadDocument(message.getChatId().toString(), message.getDocument());
             } else {
                 execute(SendMessage.builder()
@@ -98,7 +95,6 @@ public class PdfConverterBot extends TelegramLongPollingBot {
                         .build());
             }
         } else if (message.hasPhoto()) {
-            System.out.println("Got photo");
             stateController.downloadPhoto(message.getChatId().toString(), message.getPhoto());
         }
     }

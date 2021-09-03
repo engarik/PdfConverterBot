@@ -28,21 +28,20 @@ public class ITextPdfHandler implements PdfHandler {
     }
 
     @Override
-    public void convert(String rootDirectory) throws Exception {
-        convert(rootDirectory, "output.pdf");
+    public void convert(File directory) throws Exception {
+        convert(directory, "output.pdf");
     }
 
     @Override
-    public void convert(String rootDirectory, String outputFilename) throws Exception {
-        File rootDirectoryFile = new File(rootDirectory);
-        if (!(rootDirectoryFile.exists() || rootDirectoryFile.isDirectory())) {
+    public void convert(File directory, String outputFilename) throws Exception {
+        if (!(directory.exists() || directory.isDirectory())) {
             throw new IllegalArgumentException("rootDirectory must exist and be a directory.");
         }
-        Optional<File[]> listOfImageFiles = Optional.ofNullable(rootDirectoryFile.listFiles(imageFileFilter));
+        Optional<File[]> listOfImageFiles = Optional.ofNullable(directory.listFiles(imageFileFilter));
         if (listOfImageFiles.isPresent()) {
             List<File> imageFiles = new ArrayList<>(Arrays.asList(listOfImageFiles.get()));
 
-            PdfWriter pdfWriter = new PdfWriter(new File(rootDirectory, outputFilename));
+            PdfWriter pdfWriter = new PdfWriter(new File(directory, outputFilename));
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             Document document = new Document(pdfDocument);
 

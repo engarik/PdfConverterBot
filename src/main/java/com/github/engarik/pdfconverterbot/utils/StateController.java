@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.util.Comparator;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,8 +35,12 @@ public class StateController {
         clearDirectory(new File("userFiles/"));
     }
 
-    public void convertToPdf(String chatId) throws TelegramApiException {
-        File directory = new File("userFiles/" + chatId);
+    public void convertToPdf(String chatId) throws TelegramApiException, IOException {
+        File directory = new File("userFiles/" + chatId + "/out");
+
+        if (!(directory.exists() && directory.isDirectory())) {
+            throw new IOException("Directory not found: " + directory.getName());
+        }
 
         if (!numberOfFilesDownloaded.containsKey(chatId) || numberOfFilesDownloaded.get(chatId) == 0) {
             PdfConverterBot.getInstance().execute(SendMessage.builder()
@@ -46,26 +50,31 @@ public class StateController {
             return;
         }
 
+        File[] listFiles = directory.listFiles();
+        if (listFiles == null) {
+            throw new IOException("No files in directory: " + directory.getName());
+        }
+
         PdfConverterBot.getInstance().execute(SendMessage.builder()
                 .chatId(chatId)
                 .text("Processing\nPlease wait...")
                 .build());
 
-        while (directory.listFiles().length != numberOfFilesDownloaded.get(chatId)) {
+        while (listFiles.length != numberOfFilesDownloaded.get(chatId)) {
             System.out.println(numberOfFilesDownloaded);
-            System.out.println(directory.listFiles().length);
+            System.out.println(listFiles.length);
         }
         try {
-            pdfHandler.convert("userFiles/" + chatId);
+            pdfHandler.convert(directory);
         } catch (Exception e) {
             e.printStackTrace();
         }
         PdfConverterBot.getInstance().execute(SendDocument.builder()
                         .chatId(chatId)
-                        .document(new InputFile(new File("userFiles/" + chatId + "/output.pdf")))
+                        .document(new InputFile(new File("userFiles/" + chatId + "/out/output.pdf")))
                 .build());
 
-        clearDirectory(directory);
+        clearDirectory(directory.getParentFile());
         numberOfFilesDownloaded.remove(chatId);
     }
 

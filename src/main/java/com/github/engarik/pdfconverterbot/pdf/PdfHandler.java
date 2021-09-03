@@ -1,13 +1,9 @@
 package com.github.engarik.pdfconverterbot.pdf;
 
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
+import java.io.File;
 
 public interface PdfHandler {
+    void convert(File directory) throws Exception;
 
-    // This method gathers files from "rootDirectory" to output.pdf
-    void convert(String rootDirectory) throws Exception;
-
-    // This method gathers files from "rootDirectory" to "outputFilename".pdf
-    void convert(String rootDirectory, String outputFilename) throws Exception;
+    void convert(File directory, String outputFilename) throws Exception;
 }

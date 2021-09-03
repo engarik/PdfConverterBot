@@ -34,7 +34,7 @@ public class AffineImageHandler implements ImageHandler {
         // Apply operation
         rotateOp.filter(image, output);
         // Save output image on drive
-        File outputFile = new File(imageFile.getParent() + "/" + imageFile.getName());
+        File outputFile = new File(imageFile.getParent() + "/out/" + imageFile.getName());
         outputFile.mkdirs();
         ImageIO.write(output, "JPG", outputFile);
         System.out.println("Image processed");
