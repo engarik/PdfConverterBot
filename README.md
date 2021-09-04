@@ -3,6 +3,7 @@
 ### PdfConverterBot is a Telegram bot, which provides you with easy way to convert your .jpg, .png and .gif files to pdf.
 
 Authors' version of bot: `@img2pdf_engarik_bot`
+###### *May be not in operation*
 
 ## Before running
 
