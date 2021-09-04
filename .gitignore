@@ -2,3 +2,4 @@
 target/*
 bot.properties
 userFiles/*
+out/*

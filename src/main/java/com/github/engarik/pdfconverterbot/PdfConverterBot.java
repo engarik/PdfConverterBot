@@ -73,16 +73,25 @@ public class PdfConverterBot extends TelegramLongPollingBot {
             if (commandEntity.isPresent()) {
                 String command = message.getText().substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
                 switch (command) {
-                    case "/start" -> execute(SendMessage.builder()
-                            .chatId(message.getChatId().toString())
-                            .text("Send some JPG, PNG or GIF files. Type /help for more information.")
-                            .build());
-                    case "/help" -> execute(SendMessage.builder()
-                            .chatId(message.getChatId().toString())
-                            .text("1. Send your JPG, PNG or GIF files via photos or documents.\n" +
-                                    "2. Send /e command to get the PDF file.")
-                            .build());
-                    case "/e" -> stateController.convertToPdf(message.getChatId().toString());
+                    case "/start": {
+                        execute(SendMessage.builder()
+                                .chatId(message.getChatId().toString())
+                                .text("Send some JPG, PNG or GIF files. Type /help for more information.")
+                                .build());
+                        break;
+                    }
+                    case "/help": {
+                        execute(SendMessage.builder()
+                                .chatId(message.getChatId().toString())
+                                .text("1. Send your JPG, PNG or GIF files via photos or documents.\n" +
+                                        "2. Send /e command to get the PDF file.")
+                                .build());
+                        break;
+                    }
+                    case "/e": {
+                        stateController.convertToPdf(message.getChatId().toString());
+                        break;
+                    }
                 }
             }
         } else if (message.hasDocument()) {
